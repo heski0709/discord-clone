@@ -3,6 +3,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from 'next';
 import { Open_Sans } from 'next/font/google';
 import './globals.css';
+import { cn } from '@/lib/utils';
 
 const open_Sans = Open_Sans({ subsets: ['latin'] });
 
@@ -19,7 +20,12 @@ export default function RootLayout({
     return (
         <ClerkProvider>
             <html lang="ko" suppressHydrationWarning>
-                <body className={open_Sans.className}>
+                <body
+                    className={cn(
+                        open_Sans.className,
+                        'bg-white dark:bg-[#313338]'
+                    )}
+                >
                     <ThemeProvider
                         attribute="class"
                         defaultTheme="dark"
