@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         }
 
         if (name === "general") {
-            return new NextResponse("Name cannot be 'genera'", { status: 400 });
+            return new NextResponse("Name cannot be 'general'", { status: 400 });
         }
 
         const server = await db.server.update({
