@@ -1,48 +1,59 @@
-import ChatHeader from "@/components/chat/chat-header"
-import { currentProfile } from "@/lib/current-profile"
-import { db } from "@/lib/db"
-import { redirectToSignIn } from "@clerk/nextjs"
-import { redirect } from "next/navigation"
+import ChatHeader from "@/components/chat/chat-header";
+import ChatInput from "@/components/chat/chat-input";
+import { currentProfile } from "@/lib/current-profile";
+import { db } from "@/lib/db";
+import { redirectToSignIn } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
 type ChannelPageProps = {
-  params: {
-    serverId: string,
-    channelId: string
-  }
-}
+    params: {
+        serverId: string;
+        channelId: string;
+    };
+};
 
-const ChannelPage = async ({params}: ChannelPageProps) => {
-  const profile = await currentProfile();
+const ChannelPage = async ({ params }: ChannelPageProps) => {
+    const profile = await currentProfile();
 
-  if (!profile) {
-    return redirectToSignIn();
-  }
-  
-  const channel = await db.channel.findUnique({
-    where: {
-      id: params.channelId,
+    if (!profile) {
+        return redirectToSignIn();
     }
-  })
 
-  const member = await db.member.findFirst({
-    where: {
-      serverId: params.serverId,
-      profileId: profile.id
+    const channel = await db.channel.findUnique({
+        where: {
+            id: params.channelId,
+        },
+    });
+
+    const member = await db.member.findFirst({
+        where: {
+            serverId: params.serverId,
+            profileId: profile.id,
+        },
+    });
+
+    if (!channel || !member) {
+        return redirect("/");
     }
-  })
 
-  if (!channel || !member) {
-    return redirect("/");
-  }
-
-  return (
-    <div className='bg-white dark:bg-[#313338] flex flex-col h-full'>
-      <ChatHeader
-        name={channel.name}
-        serverId={channel.serverId}
-        type="channel"
-       />
-    </div>
-  )
-}
-export default ChannelPage
+    return (
+        <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
+            <ChatHeader
+                name={channel.name}
+                serverId={channel.serverId}
+                type="channel"
+            />
+            <div className="flex-1">Future Messages</div>
+            <ChatInput 
+              name={channel.name}
+              type="channel"
+              apiUrl="/api/socket/messages"
+              query={{
+                channelId: channel.id,
+                serverId: channel.serverId
+              }}
+            />
+        </div>
+    );
+};
+export default ChannelPage;
