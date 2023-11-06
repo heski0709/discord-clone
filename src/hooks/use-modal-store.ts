@@ -11,11 +11,14 @@ export type ModalType =
     | "leaveServer"
     | "invite"
     | "members"
+    | "messageFile"
 
 type ModalData = {
     server?: Server;
     channel?: Channel
     channelType?: ChannelType
+    apiUrl?: string;
+    query?: Record<string, any>
 };
 
 type ModalStore = {
