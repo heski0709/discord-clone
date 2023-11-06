@@ -12,6 +12,7 @@ import { Member, MemberRole, Profile } from "@prisma/client";
 import axios from "axios";
 import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 import queryString from "query-string";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -62,8 +63,18 @@ const ChatItem = ({
             content: content
         }
     })
+    const router = useRouter();
+    const params = useParams();
 
     const isLoading = form.formState.isSubmitting;
+
+    const onMemberClick = () => {
+        if (member.id === currentMember.id) {
+            return;
+        }
+
+        router.push(`/servers/${params?.serverId}/conversations/${member.id}`)
+    }
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
@@ -115,7 +126,7 @@ const ChatItem = ({
     return (
         <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
             <div className="group flex gap-x-2 items-start w-full">
-                <div className="cursor-pointer hover:drop-shadow-md transition">
+                <div onClick={onMemberClick} className="cursor-pointer hover:drop-shadow-md transition">
                     <UserAvatar src={member.profile.imageUrl} />
                 </div>
                 <div className="flex flex-col w-full">
@@ -192,6 +203,7 @@ const ChatItem = ({
                                                         className='p-2 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200'
                                                         placeholder="Edited message"
                                                         disabled={isLoading}
+                                                        autoFocus
                                                         {...field}
                                                     />
                                                 </div>
