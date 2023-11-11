@@ -42,7 +42,7 @@ const ChatMessages = ({
 }: ChatMessagesProps) => {
     const queryKey = `chat:${chatId}`;
     const addKey = `chat:${chatId}:messages`;
-    const updateKey = `chat:${chatId}:messages:udate`;
+    const updateKey = `chat:${chatId}:messages:update`;
 
     const chatRef = useRef<ElementRef<"div">>(null);
     const bottomRef = useRef<ElementRef<"div">>(null);
